@@ -22,22 +22,27 @@ export function componentToArray(component) {
   return result;
 }
 
-// Flattens the specified React component tree into an array
 export function renderToArray(component) {
   const renderer = TestUtils.createRenderer();
   renderer.render(component);
   return componentToArray(renderer.getRenderOutput());
 }
 
-// Used to search an array of React components for one
-// that has the specified class
-export const withClass = cls => item => 
+export const withClass = cls => item =>
   R.contains(cls, item.props.className);
 
-// Used to search an array of React components for one
-// that has the specified text
-export const withText = txt => item => 
-  R.contains(txt, item.props.children);
+const itemChildren = R.path(['props', 'children'])
+
+const defaultToBlank = R.defaultTo('');
+
+export const itemText = R.compose(
+  R.when(R.isArrayLike, R.join('')),
+  defaultToBlank,
+  itemChildren
+)
+
+export const withText = txt => item =>
+  R.contains(txt, itemText(item));
 ```
 
 Its functions greatly simplify the process of testing a React component. Here's a sample Jasmine test script that actually comes from our production codebase.
