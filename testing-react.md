@@ -4,17 +4,24 @@ Recently, I've been working with React, but I've found testing components to be 
 import TestUtils from 'react-addons-test-utils';
 import R from 'ramda';
 
+const children = R.path(['props', 'children'])
+
 export function componentToArray(component) {
   let result = [];
 
-  (function crawl(item) {
-    result.push(item);
+  (function flatten(item) {
+    if (!item) {
+      return;
+    }
 
-    if (item.props && item.props.children) {
-      if (item.props.children.forEach) {
-        item.props.children.forEach(crawl);
-      } else if (item.props.children.props) {
-        result.push(item.props.children);
+    result.push(item);
+    const content = children(item);
+
+    if (content) {
+      if (content.forEach) {
+        content.forEach(flatten);
+      } else if (content.props) {
+        result.push(content);
       }
     }
   }(component))
@@ -28,21 +35,22 @@ export function renderToArray(component) {
   return componentToArray(renderer.getRenderOutput());
 }
 
-export const withClass = cls => item =>
-  R.contains(cls, item.props.className);
-
-const itemChildren = R.path(['props', 'children'])
-
 const defaultToBlank = R.defaultTo('');
+
+const className = R.path(['props', 'className'])
+
+export const withClass = cls =>
+  R.compose(R.contains(cls), defaultToBlank, className);
 
 export const itemText = R.compose(
   R.when(R.isArrayLike, R.join('')),
   defaultToBlank,
-  itemChildren
+  children
 )
 
 export const withText = txt => item =>
   R.contains(txt, itemText(item));
+
 ```
 
 Its functions greatly simplify the process of testing a React component. Here's a sample Jasmine test script that actually comes from our production codebase.
