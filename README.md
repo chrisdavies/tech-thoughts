@@ -1,8 +1,9 @@
 # Tech thoughts
 
-Reflections on code and process with the experience of hindsight, after 16+ years experience as a software engineer.
+Reflections on code and process with the experience of hindsight, after 16+ years as a software engineer.
 
 by Chris Davies
+
 hello@christophilus.com
 
 
