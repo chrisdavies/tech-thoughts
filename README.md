@@ -1,8 +1,10 @@
 # Tech thoughts
 
-Chris Davies
-
 Reflections on code and process, by a senior software engineer.
+
+by Chris Davies
+hello@christophilus.com
+
 
 ## The thoughts
 
